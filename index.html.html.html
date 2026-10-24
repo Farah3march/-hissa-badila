@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الحصة البديلة الذكية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1E2A32;
+    --ink-soft:#5B6B72;
+    --paper:#F5F1E7;
+    --teal:#1F4E5F;
+    --teal-deep:#163A47;
+    --sage:#5D8A6C;
+    --sage-soft:#E6EFE4;
+    --amber:#D79A3C;
+    --amber-soft:#FBEFDB;
+    --card:#FFFFFF;
+    --line:#E4DECD;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(1200px 500px at 20% -10%, #FFFDF8 0%, var(--paper) 55%),
+      var(--paper);
+    font-family:'Tajawal',sans-serif;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 14px;
+  }
+  .stage{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+  }
+  .stage-label{
+    font-size:13px;
+    color:var(--ink-soft);
+    letter-spacing:.02em;
+  }
+  .stage-credit{
+    font-size:11.5px;
+    color:var(--teal);
+    font-weight:700;
+    margin-top:-6px;
+  }
+  /* device frame */
+  .device{
+    width:390px;
+    max-width:92vw;
+    height:760px;
+    max-height:86vh;
+    background:var(--teal-deep);
+    border-radius:38px;
+    padding:12px;
+    box-shadow:0 30px 60px -20px rgba(22,58,71,.45), 0 2px 4px rgba(0,0,0,.06);
+  }
+  .screen{
+    position:relative;
+    width:100%;
+    height:100%;
+    background:var(--card);
+    border-radius:28px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .statusbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 22px 6px;
+    font-family:'Tajawal',sans-serif;
+    font-size:12px;
+    color:var(--ink-soft);
+    flex-shrink:0;
+  }
+  .topbar{
+    padding:6px 20px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    flex-shrink:0;
+  }
+  .topbar .brand{
+    font-family:'Cairo',sans-serif;
+    font-weight:800;
+    font-size:19px;
+    color:var(--teal);
+  }
+  .topbar .sub{
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .credit-line{
+    font-size:10.5px;
+    color:var(--teal);
+    font-weight:700;
+    margin-top:3px;
+  }
+  .panel{
+    flex:1;
+    overflow-y:auto;
+    padding:6px 20px 26px;
+  }
+  .panel::-webkit-scrollbar{display:none;}
+
+  .view{ display:none; animation:fadein .35s ease; }
+  .view.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .section-label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:18px 0 10px;
+  }
+
+  .goals-card{
+    background:linear-gradient(180deg, #FFFFFF 0%, #F6F3EC 100%);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px 18px;
+    margin-top:6px;
+    margin-bottom:4px;
+  }
+  .goals-header{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .goals-mark{
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 3px var(--amber-soft);
+  }
+  .goals-title{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--teal);
+    letter-spacing:.01em;
+  }
+  .goals-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .goal-item{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:12.5px;
+    color:var(--ink);
+    line-height:1.5;
+  }
+  .goal-item .gi{
+    font-size:14px;
+    flex-shrink:0;
+    width:22px;
+    height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:7px;
+  }
+  .chip-row{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    font-family:'Tajawal',sans-serif;
+    font-size:13.5px;
+    font-weight:500;
+    padding:8px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+  .chip:hover{ border-color:var(--teal); }
+  .chip.selected{
+    background:var(--teal);
+    border-color:var(--teal);
+    color:#fff;
+  }
+
+  .subject-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .subject-card{
+    border:1.5px solid var(--line);
+    background:#fff;
+    border-radius:16px;
+    padding:14px 12px;
+    text-align:center;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+  .subject-card:hover{ border-color:var(--teal); transform:translateY(-1px); }
+  .subject-card .ic{ font-size:22px; display:block; margin-bottom:6px; }
+  .subject-card .nm{ font-size:13.5px; font-weight:700; font-family:'Tajawal',sans-serif; }
+
+  .primary-btn{
+    width:100%;
+    margin-top:22px;
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:14px;
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+  .primary-btn:disabled{ background:#C9CDD0; cursor:not-allowed; }
+  .primary-btn:not(:disabled):hover{ background:var(--teal-deep); }
+
+  .status-strip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--sage-soft);
+    color:#33513C;
+    border-radius:12px;
+    padding:10px 14px;
+    font-size:13px;
+    font-weight:500;
+    margin-bottom:16px;
+  }
+  .dot{ width:7px; height:7px; border-radius:50%; background:var(--sage); flex-shrink:0; }
+
+  .option-card{
+    border:1.5px solid var(--line);
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:12px;
+    cursor:pointer;
+    transition:.15s ease;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .option-card:hover{ border-color:var(--teal); box-shadow:0 8px 20px -12px rgba(31,78,95,.3); }
+  .option-card .badge{
+    width:40px; height:40px;
+    border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    flex-shrink:0;
+  }
+  .option-card.curric .badge{ background:var(--sage-soft); }
+  .option-card.enrich .badge{ background:var(--amber-soft); }
+  .option-card.external .badge{ background:#E3EAF0; }
+  .option-card .tag{
+    display:inline-block;
+    font-size:10.5px;
+    font-weight:700;
+    padding:2px 9px;
+    border-radius:999px;
+    margin-bottom:5px;
+  }
+  .option-card.curric .tag{ background:var(--sage-soft); color:#33513C; }
+  .option-card.enrich .tag{ background:var(--amber-soft); color:#8A5C10; }
+  .option-card.external .tag{ background:#E3EAF0; color:#1F4E5F; }
+  .external-open-link{
+    color:var(--teal);
+    font-weight:700;
+    font-size:12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:5px 10px;
+    display:inline-block;
+  }
+  .option-card.external:hover .external-open-link{ border-color:var(--teal); background:#F6F3EC; }
+  .option-card h4{
+    font-family:'Cairo',sans-serif;
+    font-size:15px;
+    margin:0 0 4px;
+    font-weight:700;
+  }
+  .option-card p{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0;
+    line-height:1.5;
+  }
+  .meta-row{
+    display:flex; gap:10px; margin-top:8px;
+    font-size:11.5px; color:var(--ink-soft);
+  }
+
+  .alt-box{
+    margin-top:10px;
+    background:#F6F3EC;
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:8px 10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    font-size:11px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    display:none;
+  }
+  .alt-box .alt-link{
+    color:var(--teal);
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .alt-box:hover{ border-color:var(--teal); }
+
+  /* player view */
+  .player{
+    background:var(--teal-deep);
+    border-radius:18px;
+    aspect-ratio:16/10;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  .player .play-btn{
+    width:56px;height:56px;border-radius:50%;
+    background:rgba(255,255,255,.95);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px; color:var(--teal-deep);
+    cursor:pointer;
+  }
+  .player .waves{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(500px 200px at 15% 20%, rgba(255,255,255,.08), transparent),
+      radial-gradient(400px 200px at 85% 80%, rgba(255,255,255,.06), transparent);
+  }
+  .player .timecode{
+    position:absolute; bottom:10px; left:12px;
+    font-size:11px; color:#fff; opacity:.8;
+    font-family:'Tajawal',sans-serif;
+  }
+  .lesson-title{
+    font-family:'Cairo',sans-serif;
+    font-size:16.5px;
+    font-weight:700;
+    margin:2px 0 4px;
+  }
+  .lesson-sub{ font-size:12.5px; color:var(--ink-soft); margin-bottom:6px; }
+  .lesson-attrib{
+    font-size:11.5px;
+    color:var(--sage);
+    font-weight:700;
+    margin-bottom:16px;
+  }
+
+  .worksheet{
+    display:flex; align-items:center; gap:10px;
+    border:1.5px dashed var(--line);
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:.15s ease;
+  }
+  .worksheet:hover{ border-color:var(--teal); background:#F6F3EC; }
+  .worksheet .ic{ font-size:18px; }
+  .worksheet .ws-view{
+    margin-right:auto;
+    color:var(--teal);
+    font-weight:700;
+    font-size:11.5px;
+    white-space:nowrap;
+  }
+
+  .ws-question{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .ws-question .qn{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    margin-bottom:6px;
+  }
+  .ws-question .qtext{
+    font-size:13.5px;
+    color:var(--ink);
+  }
+  .ws-answer{
+    display:none;
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed var(--line);
+    font-size:12.5px;
+    color:var(--sage);
+    font-weight:700;
+  }
+  .ws-answer.show{ display:block; }
+  .ws-toggle-btn{
+    width:100%;
+    margin-top:8px;
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:13px;
+    font-family:'Tajawal',sans-serif;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .ws-toggle-btn:hover{ background:var(--teal-deep); }
+  .ws-note{
+    font-size:12px;
+    color:var(--ink-soft);
+    background:#F6F3EC;
+    border-radius:12px;
+    padding:12px 14px;
+    line-height:1.6;
+  }
+
+  .exam-file-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:16px;
+  }
+  .exam-file-icon{
+    width:48px; height:48px;
+    border-radius:12px;
+    background:#E3EAF0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px;
+    flex-shrink:0;
+  }
+  .exam-file-name{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    margin-bottom:4px;
+  }
+  .exam-file-meta{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .exam-file-teacher{
+    font-size:11.5px;
+    color:var(--sage);
+    font-weight:700;
+  }
+
+  .quiz-question{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:10px;
+  }
+  .quiz-question .qn{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    margin-bottom:8px;
+  }
+  .quiz-option{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12.5px;
+    padding:7px 10px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  #quizBody.answers-shown .quiz-option.correct{
+    border-color:var(--sage);
+    background:var(--sage-soft);
+    color:#33513C;
+    font-weight:700;
+  }
+  .quiz-option .ok-mark{ display:none; color:var(--sage); font-weight:700; }
+  #quizBody.answers-shown .quiz-option.correct .ok-mark{ display:inline; }
+
+  .back-link{
+    font-size:12.5px;
+    color:var(--teal);
+    font-weight:700;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    margin-bottom:4px;
+  }
+
+  .finish-btn{
+    width:100%;
+    margin-top:18px;
+    background:transparent;
+    border:1.5px solid var(--line);
+    color:var(--ink-soft);
+    border-radius:14px;
+    padding:12px;
+    font-family:'Tajawal',sans-serif;
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .finish-btn:hover{ border-color:var(--ink-soft); color:var(--ink); }
+
+  .empty-hero{
+    text-align:center;
+    padding:30px 6px 10px;
+  }
+  .empty-hero .emoji{ font-size:34px; }
+  .empty-hero h3{
+    font-family:'Cairo',sans-serif;
+    font-size:16px;
+    margin:10px 0 6px;
+  }
+  .empty-hero p{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .mode-note{font-size:11px;color:var(--sage);font-weight:700;margin-top:4px;line-height:1.5;}
+  .timer-box{background:var(--teal);color:#fff;border-radius:16px;padding:14px;margin:10px 0 12px;text-align:center;}
+  .timer-label{font-size:12px;opacity:.85;margin-bottom:2px;}
+  .timer-digits{font-family:'Cairo',sans-serif;font-weight:800;font-size:40px;line-height:1.15;direction:ltr;}
+  .timer-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden;margin:8px 0 10px;}
+  .timer-bar span{display:block;height:100%;width:0;background:var(--amber);transition:width .4s linear;}
+  .timer-actions{display:flex;gap:8px;justify-content:center;}
+  .timer-actions button{flex:1;font-family:inherit;font-size:13px;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;cursor:pointer;}
+  .timer-actions button:first-child{background:#fff;color:var(--teal);font-weight:700;}
+  .demo-toggle{display:block;font-size:10.5px;opacity:.8;margin-top:8px;}
+  .stage-row{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:6px;font-size:12.5px;}
+  .stage-row .sn{width:22px;height:22px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;flex:none;}
+  .stage-row .st{flex:1;}
+  .stage-row .sm{color:var(--ink-soft);font-size:11.5px;}
+  .stage-row.now{border-color:var(--amber);background:var(--amber-soft);}
+  .stage-row.now .sn{background:var(--amber);color:#fff;}
+  .stage-row.done{opacity:.55;}
+  .stage-row.done .sn{background:var(--sage);color:#fff;}
+  .link-status{font-size:12px;line-height:1.7;border-radius:12px;padding:9px 12px;margin:6px 0 4px;border:1px solid var(--line);background:var(--card);}
+  .link-status.ok{background:var(--sage-soft);border-color:#BBD3BF;color:#2F5A3C;}
+  .link-status.warn{background:var(--amber-soft);border-color:#E8C98F;color:#6B4A10;}
+  .link-status button{font-family:inherit;font-size:12px;margin-top:6px;padding:6px 12px;border-radius:9px;border:1px solid var(--amber);background:#fff;color:#6B4A10;cursor:pointer;}
+  .demo-line{display:block;font-size:10.5px;color:var(--ink-soft);margin:2px 2px 8px;}
+  .trial-banner{background:var(--sage-soft);border:1px solid #BBD3BF;color:#2F5A3C;border-radius:12px;padding:9px 12px;font-size:12px;line-height:1.7;margin:8px 0 10px;}
+  .f-label{display:block;font-size:11.5px;color:var(--ink-soft);margin:8px 2px 3px;}
+  .f-input{width:100%;font-family:inherit;font-size:13px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);}
+  .future-box{background:var(--amber-soft);border:1px dashed #E0B26A;border-radius:12px;padding:10px 12px;margin-top:14px;font-size:12px;line-height:1.8;color:#5A3F10;}
+  .future-box .future-title{font-weight:700;margin-bottom:4px;}
+  .future-box ol{margin:0;padding-right:18px;}
+  .plan-card{background:var(--card);border:1.5px solid var(--teal);border-radius:16px;padding:12px;margin:8px 0;}
+  .plan-head{font-weight:800;font-family:'Cairo',sans-serif;color:var(--teal);font-size:14px;margin-bottom:8px;}
+  .plan-row{display:flex;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;}
+  .plan-row:first-of-type{border-top:0;}
+  .plan-row .pm{min-width:38px;text-align:center;background:var(--amber-soft);color:#6B4A10;border-radius:8px;padding:3px 0;font-weight:700;font-size:12px;flex:none;}
+  .plan-row .pt{flex:1;line-height:1.5;}
+  .plan-row .ps{display:block;color:var(--ink-soft);font-size:11px;}
+  .plan-row .pa{font-family:inherit;font-size:11px;border:1px solid var(--teal);background:#fff;color:var(--teal);border-radius:8px;padding:5px 8px;cursor:pointer;flex:none;}
+  .plan-total{font-size:11.5px;color:var(--ink-soft);margin:6px 0 8px;}
+  .sact{font-family:inherit;font-size:10.5px;border:1px solid var(--teal);background:#fff;color:var(--teal);border-radius:8px;padding:4px 7px;cursor:pointer;flex:none;}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="device">
+    <div class="screen">
+      <div class="statusbar">
+        <span>٩:٤٢</span>
+        <span>مدرسة الأمل للتعليم الأساسي</span>
+      </div>
+
+      <div class="topbar">
+        <div class="brand">الحصة البديلة الذكية</div>
+        <div class="sub" id="topSub">اختاري الصف والمادة لعرض الحصة الجاهزة</div>
+        <div class="mode-note">وحدة مقترحة ضمن منصة «نور» — تعمل مؤقتاً كصفحة مستقلة إلى حين تفعيلها في المدارس</div>
+      </div>
+
+      <div class="panel">
+
+        <!-- VIEW 1: selection -->
+        <div class="view active" id="view-select">
+
+          <div class="goals-card">
+            <div class="goals-header">
+              <span class="goals-mark"></span>
+              <span class="goals-title">أهداف الحصة البديلة</span>
+            </div>
+            <div class="goals-list">
+              <div class="goal-item"><span class="gi">📘</span><span>ضمان استمرارية المنهج دون تأخير</span></div>
+              <div class="goal-item"><span class="gi">🤝</span><span>تخفيف العبء عن معلمة الاحتياط</span></div>
+              <div class="goal-item"><span class="gi">✨</span><span>تحويل الحصة إلى وقت مفيد وممتع للطالب</span></div>
+            </div>
+          </div>
+
+          <div class="section-label">الصف الدراسي</div>
+          <div class="chip-row" id="gradeRow">
+            <div class="chip" data-grade="٥">الصف ٥</div>
+            <div class="chip" data-grade="٦">الصف ٦</div>
+            <div class="chip" data-grade="٧">الصف ٧</div>
+            <div class="chip" data-grade="٨">الصف ٨</div>
+            <div class="chip" data-grade="٩">الصف ٩</div>
+          </div>
+
+          <div class="section-label">المادة</div>
+          <div class="subject-grid" id="subjectGrid">
+            <div class="subject-card" data-subject="رياضيات"><span class="ic">📐</span><span class="nm">رياضيات</span></div>
+            <div class="subject-card" data-subject="علوم"><span class="ic">🔬</span><span class="nm">علوم</span></div>
+            <div class="subject-card" data-subject="لغة عربية"><span class="ic">📖</span><span class="nm">لغة عربية</span></div>
+            <div class="subject-card" data-subject="لغة إنجليزية"><span class="ic">🔤</span><span class="nm">لغة إنجليزية</span></div>
+            <div class="subject-card" data-subject="تربية إسلامية"><span class="ic">🕌</span><span class="nm">تربية إسلامية</span></div>
+            <div class="subject-card" data-subject="دراسات اجتماعية"><span class="ic">🗺️</span><span class="nm">دراسات اجتماعية</span></div>
+          </div>
+
+          <div class="section-label">فتح الحصة من</div>
+          <div class="chip-row" id="modeRow">
+            <div class="chip selected" data-mode="noor">🔗 منصة «نور»</div>
+            <div class="chip" data-mode="solo">💻 تشغيل مستقل</div>
+          </div>
+          <div class="link-status" id="linkStatus"></div>
+          <label class="demo-line"><input type="checkbox" id="faultSim"> محاكاة خلل في منصة «نور» (للعرض فقط)</label>
+
+          <div class="section-label">زمن الحصة</div>
+          <div class="chip-row" id="periodRow">
+            <div class="chip selected" data-period="30">٣٠ دقيقة</div>
+            <div class="chip" data-period="35">٣٥ دقيقة</div>
+          </div>
+
+          <button class="primary-btn" id="goBtn" disabled>عرض الحصة الجاهزة</button>
+          <button class="finish-btn" style="margin-top:10px" onclick="openContribute()">👩‍🏫 معلمة مادة؟ ارفعي درسك أو مادتك التعليمية</button>
+        </div>
+
+        <!-- VIEW 2: suggestions -->
+        <div class="view" id="view-suggest">
+          <span class="back-link" onclick="toView('view-select')">→ رجوع</span>
+          <div class="status-strip"><span class="dot"></span><span id="statusLine"></span></div>
+          <div class="plan-card" id="planCard"></div>
+          <div class="section-label" style="margin-top:12px">بدائل ومصادر إضافية</div>
+
+          <div class="option-card curric" onclick="openPlayer('curric')">
+            <div class="badge">📘</div>
+            <div>
+              <span class="tag">امتداد المنهج</span>
+              <h4 id="curricTitle">—</h4>
+              <p id="curricDesc">يكمل تسلسل الدرس مباشرة — تشغيل تلقائي وورقة عمل مرفقة.</p>
+              <div class="meta-row"><span>⏱ مقطع الشرح ٦ د (جزء من الحصة)</span><span>📄 ورقة عمل مرفقة</span></div>
+              <div class="meta-row" id="curricAttrib" style="margin-top:4px;"></div>
+              <div class="alt-box" id="curricAltBox" onclick="event.stopPropagation(); swapCurricVersion();">
+                <span class="alt-text"></span>
+                <span class="alt-link">عرض هذي النسخة →</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="option-card enrich" onclick="openPlayer('enrich')">
+            <div class="badge">✨</div>
+            <div>
+              <span class="tag">نشاط إثرائي</span>
+              <h4 id="enrichTitle">—</h4>
+              <p id="enrichDesc">نشاط مشوّق مستقل عن المنهج، مناسب إذا رغبتِ بتجربة مختلفة.</p>
+              <div class="meta-row"><span>⏱ ١٠ د — بديل لمرحلة النشاط</span><span>👥 عمل جماعي</span></div>
+            </div>
+          </div>
+
+          <div class="option-card external" id="externalCard" style="display:none;" onclick="openExternal()">
+            <div class="badge">🔗</div>
+            <div>
+              <span class="tag">مصدر خارجي موثوق</span>
+              <h4 id="externalTitle">—</h4>
+              <p id="externalDesc">مقطع تعليمي متاح على الإنترنت، يُفتح مباشرة في نافذة جديدة.</p>
+              <div class="meta-row" id="externalAttrib"></div>
+              <div class="meta-row" style="margin-top:8px;">
+                <span class="external-open-link">مشاهدة الفيديو ↗</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 3: player -->
+        <div class="view" id="view-player">
+          <span class="back-link" onclick="toView('view-suggest')">→ رجوع للاقتراحات</span>
+
+          <div class="player">
+            <div class="waves"></div>
+            <div class="play-btn">▶</div>
+            <div class="timecode">٠٠:٠٠ / ٠٦:١٢</div>
+          </div>
+
+          <div class="lesson-title" id="playerTitle">القسمة على رقم من خانتين</div>
+          <div class="lesson-sub" id="playerSub">الصف ٤ · رياضيات · امتداد المنهج</div>
+          <div class="lesson-attrib" id="playerAttrib">بواسطة —</div>
+
+          <div class="worksheet" onclick="openWorksheet()">
+            <span class="ic">🖨️</span>
+            <span>ورقة عمل مرفقة — جاهزة للطباعة أو العرض المباشر للطلبة</span>
+            <span class="ws-view">عرض المثال ←</span>
+          </div>
+          <div class="worksheet" onclick="openWorksheet()">
+            <span class="ic">✅</span>
+            <span>مفتاح تصحيح مبسّط متوفر لمتابعة إجابات الطلبة</span>
+            <span class="ws-view">عرض المثال ←</span>
+          </div>
+          <div class="worksheet" onclick="openQuiz()">
+            <span class="ic">📝</span>
+            <span>اختبار قصير مرفق من المعلمة</span>
+            <span class="ws-view">عرض المثال ←</span>
+          </div>
+          <div class="worksheet" onclick="openExam()">
+            <span class="ic">📁</span>
+            <span>اختبار نهائي مرفق من المعلمة</span>
+            <span class="ws-view">عرض المثال ←</span>
+          </div>
+
+          <button class="primary-btn" style="margin:10px 0 0" onclick="openLesson()">▶ ابدأ الحصة الكاملة بالمؤقت</button>
+          <button class="finish-btn" onclick="toView('view-select'); resetAll();">إنهاء الحصة والعودة للبداية</button>
+        </div>
+
+        <!-- VIEW: full lesson with timer -->
+        <div class="view" id="view-lesson">
+          <span class="back-link" onclick="stopTimer(); toView('view-player')">→ رجوع</span>
+          <div class="lesson-title" id="lsTitle" style="font-size:15px;">الحصة الكاملة</div>
+          <div class="lesson-sub" id="lsSub"></div>
+          <div class="timer-box">
+            <div class="timer-label" id="lsStageName">—</div>
+            <div class="timer-digits" id="lsClock">٠٠:٠٠</div>
+            <div class="timer-bar"><span id="lsBar"></span></div>
+            <div class="timer-actions">
+              <button id="lsPlay" onclick="toggleTimer()">ابدأ</button>
+              <button onclick="nextStage()">المرحلة التالية</button>
+            </div>
+            <label class="demo-toggle"><input type="checkbox" id="lsFast" onchange="resetTimer()"> وضع العرض السريع (كل دقيقة = ثانية)</label>
+          </div>
+          <div id="lsStages"></div>
+          <div class="ws-note" style="margin-top:12px;">المؤقت وتسلسل المراحل جزء من التصميم المقترح، ويظهر هنا كنموذج للعرض فقط. في التطبيق الفعلي يرتبط كل مرحلة بمحتوى الدرس المعتمد.</div>
+        </div>
+
+        <!-- VIEW: teacher contribution -->
+        <div class="view" id="view-contribute">
+          <span class="back-link" onclick="toView('view-select')">→ رجوع</span>
+          <div class="lesson-title" style="font-size:15px;">رفع مادة تعليمية</div>
+          <div class="trial-banner">🟢 <b>مرحلة تجريبية:</b> باب الإسهام مفتوح لكل معلمة ترغب برفع مادتها التعليمية وحفظها ليستفيد منها الجميع. تُراجَع المادة قبل ظهورها.</div>
+
+          <div id="contribForm">
+            <label class="f-label">التخصص (المادة)</label>
+            <select class="f-input" id="cSubject"><option>رياضيات</option><option>علوم</option><option>لغة عربية</option><option>لغة إنجليزية</option><option>تربية إسلامية</option><option>دراسات اجتماعية</option></select>
+            <label class="f-label">الصف</label>
+            <select class="f-input" id="cGrade"><option>٥</option><option>٦</option><option>٧</option><option>٨</option><option>٩</option></select>
+            <label class="f-label">اسم المعلمة</label>
+            <input class="f-input" id="cName" placeholder="الاسم كما في السجلات">
+            <label class="f-label">الرقم الوظيفي</label>
+            <input class="f-input" id="cEmp" inputmode="numeric" placeholder="الرقم الوظيفي">
+            <label class="f-label">عنوان الدرس</label>
+            <input class="f-input" id="cTitle" placeholder="مثال: حل المعادلات الخطية البسيطة">
+            <label class="f-label">نوع المادة</label>
+            <select class="f-input" id="cType"><option>شرح الدرس (فيديو أو عرض)</option><option>ورقة عمل</option><option>اختبار قصير</option><option>اختبار نهائي</option><option>رابط خارجي عربي موثوق</option></select>
+            <label class="f-label">الملف أو الرابط</label>
+            <input class="f-input" type="file" id="cFile">
+            <button class="primary-btn" style="margin-top:12px" onclick="submitContribute()">حفظ ورفع المادة (تجريبي)</button>
+          </div>
+          <div class="link-status ok" id="contribDone" style="display:none;"></div>
+
+          <div class="future-box">
+            <div class="future-title">🔒 بعد اعتماد الفكرة</div>
+            <ol>
+              <li>اختيار التخصص</li>
+              <li>اختيار الاسم من قائمة معلمات التخصص</li>
+              <li>إدخال الرقم الوظيفي</li>
+              <li>إرسال رمز تحقق (OTP) إلى رقم هاتفك المسجل، للتأكد أنك أنتِ من تُدخل البيانات وليس شخص دخيل</li>
+              <li>رفع الحصة وحفظها</li>
+            </ol>
+          </div>
+          <div class="ws-note" style="margin-top:10px;">هذا النموذج لا يحفظ أي بيانات ولا يرسل شيئاً؛ الحقول للعرض فقط.</div>
+        </div>
+
+        <!-- VIEW 4: worksheet example -->
+        <div class="view" id="view-worksheet">
+          <span class="back-link" onclick="backFromAttach()">→ رجوع للحصة</span>
+          <div class="lesson-title" id="wsTitle" style="font-size:15px;">ورقة عمل</div>
+          <div class="lesson-sub" id="wsSub" style="margin-bottom:14px;"></div>
+
+          <div id="wsBody"></div>
+
+          <button class="ws-toggle-btn" id="wsToggleBtn" onclick="toggleAnswers()">إظهار مفتاح التصحيح</button>
+        </div>
+
+        <!-- VIEW 5: short quiz example -->
+        <div class="view" id="view-quiz">
+          <span class="back-link" onclick="backFromAttach()">→ رجوع للحصة</span>
+          <div class="lesson-title" id="quizTitle" style="font-size:15px;">اختبار قصير</div>
+          <div class="lesson-sub" id="quizSub" style="margin-bottom:14px;"></div>
+
+          <div id="quizBody"></div>
+
+          <button class="ws-toggle-btn" id="quizToggleBtn" onclick="toggleQuizAnswers()">إظهار الإجابات الصحيحة</button>
+        </div>
+
+        <!-- VIEW 6: final exam attachment example -->
+        <div class="view" id="view-exam">
+          <span class="back-link" onclick="backFromAttach()">→ رجوع للحصة</span>
+          <div class="lesson-title" style="font-size:15px;">اختبار نهائي مرفق</div>
+          <div class="lesson-sub" style="margin-bottom:14px;">مثال توضيحي لآلية الإرفاق</div>
+
+          <div class="exam-file-card">
+            <div class="exam-file-icon">📄</div>
+            <div class="exam-file-info">
+              <div class="exam-file-name" id="examFileName">اختبار الفصل الدراسي — رياضيات (الصف السابع)</div>
+              <div class="exam-file-meta">PDF · ٤ صفحات · ٢٠ سؤالاً</div>
+              <div class="exam-file-teacher" id="examTeacher">مرفق بواسطة: الأستاذة سالمة الهنائية</div>
+            </div>
+          </div>
+          <div class="ws-note" style="margin-top:14px;">هذا مثال توضيحي لآلية إرفاق الاختبار النهائي كملف PDF من قِبل معلمة المادة. عند التطبيق الفعلي، يُتاح للمعلمة رفع الملف الرسمي مباشرة، وتقوم معلمة الاحتياط بطباعته أو عرضه دون أي تدخل إضافي.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="stage-label">نموذج أولي تفاعلي — الحصة البديلة الذكية</div>
+  <div class="stage-credit">الفكرة وجميع الحقوق: عتاب بنت سعيد الحبسية</div>
+</div>
+
+<script>
+  let grade = null, subject = null;
+
+  // أمثلة توضيحية لمحتوى متسلسل مع سير المنهج العام لكل مادة وصف (٥-٩)
+  const lessonData = {
+    "رياضيات": {
+      "٥": { curric:["الكسور العشرية وعملياتها","استكمال شرح الجمع والطرح للكسور العشرية بأمثلة تطبيقية."], enrich:["تحدي المسائل المنطقية","ألغاز عددية قصيرة تنمّي مهارة حل المسائل بالتفكير المنطقي."] },
+      "٦": { curric:["النسبة والتناسب","تطبيقات عملية على النسبة والتناسب في مواقف الحياة اليومية."], enrich:["لغز الأنماط العددية","اكتشاف قاعدة التسلسل في سلاسل أرقام متتابعة."] },
+      "٧": { curric:["حل المعادلات الخطية البسيطة","خطوات إيجاد قيمة المجهول في معادلة من الدرجة الأولى."], enrich:["مسابقة الحساب الذهني السريع","تدريب سريع الإيقاع على العمليات الحسابية الذهنية."] },
+      "٨": { curric:["نظرية فيثاغورس","تطبيق العلاقة بين أضلاع المثلث القائم الزاوية."], enrich:["تصميم أشكال بالتناظر الهندسي","نشاط رسم وقص يعزز فهم التناظر والتماثل."] },
+      "٩": { curric:["الدوال الخطية وتمثيلها البياني","رسم العلاقة الخطية على المستوى الإحداثي وقراءتها."], enrich:["تحدي الألغاز الرياضية الجماعي","حل مسائل تعاونية ضمن فرق صغيرة."] },
+    },
+    "علوم": {
+      "٥": { curric:["دورة الماء في الطبيعة","مراحل التبخر والتكاثف وهطول الأمطار."], enrich:["نموذج مطر مصغّر","تجربة بسيطة لمحاكاة تكوّن السحب والمطر."] },
+      "٦": { curric:["الجهاز الهضمي في جسم الإنسان","تتبع مسار الغذاء عبر أعضاء الجهاز الهضمي."], enrich:["نقاش: عادات غذائية صحية","حوار موجّه حول أثر التغذية السليمة على الجسم."] },
+      "٧": { curric:["الخلية ومكوناتها","التعرف على أجزاء الخلية النباتية والحيوانية ووظائفها."], enrich:["نموذج مجسّم للخلية","نشاط تركيب بسيط يجسّد مكونات الخلية."] },
+      "٨": { curric:["القوى والحركة","مفهوم القوة وأثرها في تغيير حركة الأجسام."], enrich:["بناء أداة بسيطة بقوة دفع","تجربة تطبيقية لمبدأ الحركة بأدوات بسيطة."] },
+      "٩": { curric:["التفاعلات الكيميائية الأساسية","الفرق بين التغير الفيزيائي والتفاعل الكيميائي."], enrich:["تجربة آمنة لملاحظة تغيّر الألوان","تجربة مبسّطة وآمنة توضح علامات حدوث تفاعل."] },
+    },
+    "لغة عربية": {
+      "٥": { curric:["قراءة نص وصفي وتحليل عناصره","استخراج الفكرة العامة والتفاصيل من نص وصفي."], enrich:["مسابقة الإملاء السريع","تدريب جماعي ممتع على الإملاء الصحيح."] },
+      "٦": { curric:["الفعل الماضي والمضارع والأمر","التمييز بين أزمنة الفعل واستخدامها في الجملة."], enrich:["كتابة قصة قصيرة جماعية","نشاط إبداعي تعاوني لتأليف قصة قصيرة."] },
+      "٧": { curric:["أسلوبا النداء والاستفهام","صياغة الجمل بأسلوبي النداء والاستفهام."], enrich:["إلقاء أبيات محفوظة","مسابقة إلقاء شعري قصيرة بين الطلبة."] },
+      "٨": { curric:["التمييز والحال","التعرف على التمييز والحال وإعرابهما في جمل بسيطة."], enrich:["تحليل نص أدبي قصير","قراءة نص قصير ومناقشة أفكاره الرئيسية."] },
+      "٩": { curric:["أسلوب الشرط","أدوات الشرط وأثرها في تركيب الجملة."], enrich:["مناظرة قصيرة حول موضوع عام","نشاط حواري يعزز مهارة التعبير والإقناع."] },
+    },
+    "لغة إنجليزية": {
+      "٥": { curric:["Simple Present Tense","Practising everyday actions using the simple present tense."], enrich:["Vocabulary Bingo","A fun game to review recently learned vocabulary."] },
+      "٦": { curric:["Reading a Short Story","Guided comprehension of a short narrative text."], enrich:["Picture Storytelling","Students build a short story from a set of pictures."] },
+      "٧": { curric:["Comparatives & Superlatives","Forming and using comparative and superlative adjectives."], enrich:["Word-Chain Speaking Game","A quick speaking activity to build vocabulary fluency."] },
+      "٨": { curric:["Past Continuous Tense","Describing ongoing past actions using the past continuous."], enrich:["Group Role-Play Dialogue","Short guided dialogues practising everyday conversation."] },
+      "٩": { curric:["Reported Speech Basics","Introducing how to report what someone else said."], enrich:["Mini Debate","A short structured debate on an everyday topic."] },
+    },
+    "تربية إسلامية": {
+      "٥": { curric:["آداب التعامل مع الوالدين","القيم والسلوكيات المستحبة في بر الوالدين."], enrich:["نقاش حواري حول القيم الأسرية","حوار موجّه يعزز الترابط الأسري."] },
+      "٦": { curric:["قصة من قصص الأنبياء","استعراض العبر المستفادة من إحدى قصص الأنبياء."], enrich:["مسابقة معرفية عن السيرة","أسئلة سريعة ومحفّزة حول السيرة النبوية."] },
+      "٧": { curric:["أركان الصلاة وشروطها","التعريف بأركان الصلاة وشروط صحتها."], enrich:["ورشة تطبيقية مبسّطة","نشاط توضيحي غير عملي يرسّخ الفهم النظري."] },
+      "٨": { curric:["الأخلاق في التعامل مع الآخرين","القيم الأخلاقية في التعاملات اليومية."], enrich:["نقاش قيمي حول موقف حياتي","مناقشة موقف واقعي وربطه بقيمة أخلاقية."] },
+      "٩": { curric:["مقدمة في فقه المعاملات","مبادئ عامة في المعاملات المالية المباحة."], enrich:["نقاش تطبيقي حول الأمانة والصدق","حوار يربط القيم بالمواقف الحياتية المعاصرة."] },
+    },
+    "دراسات اجتماعية": {
+      "٥": { curric:["جغرافية سلطنة عُمان: المحافظات","التعرف على محافظات السلطنة وموقعها الجغرافي."], enrich:["تعرّف على أعلام المحافظات","مسابقة تعريفية بمعالم وأعلام المحافظات العُمانية."] },
+      "٦": { curric:["التاريخ العُماني: بدايات النهضة","محطات مختارة من بداية النهضة المعاصرة."], enrich:["نقاش عن التراث العُماني","حوار حول عناصر التراث المادي وغير المادي."] },
+      "٧": { curric:["الموارد الطبيعية في الوطن العربي","أبرز الموارد الطبيعية وتوزّعها الجغرافي."], enrich:["خريطة ذهنية للموارد","نشاط تلخيصي بصري لأبرز الموارد الطبيعية."] },
+      "٨": { curric:["النظام السياسي في سلطنة عُمان","التعريف العام بمؤسسات الدولة وهيكلها."], enrich:["نقاش عن المواطنة والمشاركة","حوار حول دور الفرد في خدمة مجتمعه."] },
+      "٩": { curric:["قضايا بيئية معاصرة","أبرز التحديات البيئية المعاصرة وأثرها."], enrich:["مشروع جماعي: أفكار للحفاظ على البيئة","عصف ذهني جماعي لحلول بيئية بسيطة وقابلة للتطبيق."] },
+    },
+  };
+
+  // نسب الفضل: المعلمة المساهمة الأساسية لكل مادة + عدد مرات استخدام كل درس
+  const teacherOf = {
+    "رياضيات": "الأستاذة سالمة الهنائية",
+    "علوم": "الأستاذة ميثاء البلوشية",
+    "لغة عربية": "الأستاذة نجلاء الكندية",
+    "لغة إنجليزية": "الأستاذة هدى الرواحية",
+    "تربية إسلامية": "الأستاذة فاطمة السيابية",
+    "دراسات اجتماعية": "الأستاذة شيخة المعمرية",
+  };
+  function usesFor(subject, grade){
+    let h = 0;
+    for (const c of (subject+grade)) h = (h*31 + c.charCodeAt(0)) % 97;
+    return 9 + (h % 32); // رقم ثابت بين ٩ و٤٠ حسب المادة والصف
+  }
+  // مثال توضيحي: درس له نسختان من معلمتين مختلفتين لنفس الموضوع
+  const altVersions = {
+    "رياضيات__٧": {
+      title: "حل المعادلات الخطية البسيطة",
+      desc: "طريقة بديلة بأسلوب أبسط بالرسم التوضيحي، خطوة بخطوة.",
+      teacher: "الأستاذة بدرية الحارثية",
+      uses: 11,
+    },
+  };
+  let activeCurricVersion = null; // يحمل النسخة المعروضة حالياً بشاشة الاقتراح
+
+  // مثال توضيحي لمصدر خارجي (رابط حقيقي وفعّال لبحث تعليمي على يوتيوب — وليس مقطعاً محدداً لشخص حقيقي)
+  const externalContent = {
+    "رياضيات__٧": {
+      teacher: "المعلمة زينب",
+      source: "قناة تعليمية على يوتيوب",
+      title: "شرح مبسّط: حل المعادلات الخطية بأسلوب مختلف",
+      url: "https://www.youtube.com/results?search_query=%D8%A7%D9%84%D9%85%D8%B9%D8%A7%D8%AF%D9%84%D8%A7%D8%AA+%D8%A7%D9%84%D8%AE%D8%B7%D9%8A%D8%A9+%D8%A7%D9%84%D8%A8%D8%B3%D9%8A%D8%B7%D8%A9+%D8%A7%D9%84%D8%B5%D9%81+%D8%A7%D9%84%D8%B3%D8%A7%D8%A8%D8%B9",
+    },
+    "رياضيات__٥": {
+      teacher: "المعلمة هناء",
+      source: "قناة تعليمية على يوتيوب",
+      title: "شرح مصوّر: جمع وطرح الكسور العشرية خطوة بخطوة",
+      url: "https://www.youtube.com/results?search_query=%D8%A7%D9%84%D9%83%D8%B3%D9%88%D8%B1+%D8%A7%D9%84%D8%B9%D8%B4%D8%B1%D9%8A%D8%A9+%D8%A7%D9%84%D8%AC%D9%85%D8%B9+%D9%88%D8%A7%D9%84%D8%B7%D8%B1%D8%AD+%D8%A7%D9%84%D8%B5%D9%81+%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3",
+    },
+  };
+  let activeExternal = null;
+
+  document.querySelectorAll('#gradeRow .chip').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      document.querySelectorAll('#gradeRow .chip').forEach(c=>c.classList.remove('selected'));
+      el.classList.add('selected');
+      grade = el.dataset.grade;
+      checkReady();
+    });
+  });
+
+  document.querySelectorAll('.subject-card').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      document.querySelectorAll('.subject-card').forEach(c=>c.style.borderColor='');
+      el.style.borderColor = 'var(--teal)';
+      subject = el.dataset.subject;
+      checkReady();
+    });
+  });
+
+  function checkReady(){
+    document.getElementById('goBtn').disabled = !(grade && subject);
+  }
+
+  function renderCurricVersion(v){
+    activeCurricVersion = v;
+    document.getElementById('curricTitle').textContent = v.title;
+    document.getElementById('curricDesc').textContent = v.desc;
+    document.getElementById('curricAttrib').textContent = `👩‍🏫 ${v.teacher} · استُخدم ${v.uses} مرة`;
+    const altBox = document.getElementById('curricAltBox');
+    if (v.alt) {
+      altBox.style.display = 'block';
+      altBox.querySelector('.alt-text').textContent =
+        `تتوفر نسخة أخرى لنفس الدرس من ${v.alt.teacher} (استُخدمت ${v.alt.uses} مرة)`;
+    } else {
+      altBox.style.display = 'none';
+    }
+  }
+
+  function swapCurricVersion(){
+    if (!activeCurricVersion || !activeCurricVersion.alt) return;
+    const current = activeCurricVersion;
+    const alt = current.alt;
+    renderCurricVersion({ ...alt, alt: { title: current.title, desc: current.desc, teacher: current.teacher, uses: current.uses } });
+  }
+
+  document.getElementById('goBtn').addEventListener('click', ()=>{
+    const data = lessonData[subject][grade];
+    const primaryTeacher = teacherOf[subject];
+    const primaryUses = usesFor(subject, grade);
+    const alt = altVersions[`${subject}__${grade}`] || null;
+
+    // النسخة الأكثر استخداماً تُعرض أولاً
+    let primary = { title: data.curric[0], desc: data.curric[1], teacher: primaryTeacher, uses: primaryUses };
+    if (alt) {
+      if (alt.uses > primary.uses) {
+        primary = { ...alt, alt: { title: data.curric[0], desc: data.curric[1], teacher: primaryTeacher, uses: primaryUses } };
+      } else {
+        primary.alt = alt;
+      }
+    }
+    renderCurricVersion(primary);
+
+    document.getElementById('enrichTitle').textContent = data.enrich[0];
+    document.getElementById('enrichDesc').textContent = data.enrich[1];
+
+    const ext = externalContent[`${subject}__${grade}`] || null;
+    const extCard = document.getElementById('externalCard');
+    if (ext) {
+      activeExternal = ext;
+      extCard.style.display = 'flex';
+      document.getElementById('externalTitle').textContent = ext.title;
+      document.getElementById('externalAttrib').textContent = `👩‍🏫 بواسطة ${ext.teacher} · ${ext.source}`;
+    } else {
+      activeExternal = null;
+      extCard.style.display = 'none';
+    }
+
+    document.getElementById('statusLine').textContent =
+      `الصف ${grade} — ${subject}: تم إيجاد الدرس التالي في تسلسل المنهج`;
+    document.getElementById('topSub').textContent = `الصف ${grade} · ${subject}`;
+    renderPlan();
+    toView('view-suggest');
+  });
+
+  function openPlayer(type){
+    const data = lessonData[subject][grade];
+    let title, kind, attrib;
+    if (type === 'curric') {
+      title = activeCurricVersion.title;
+      kind = 'امتداد المنهج';
+      attrib = `بواسطة ${activeCurricVersion.teacher} · استُخدم ${activeCurricVersion.uses} مرة`;
+    } else {
+      title = data.enrich[0];
+      kind = 'نشاط إثرائي';
+      attrib = 'محتوى إثرائي معتمد';
+    }
+    document.getElementById('playerTitle').textContent = title;
+    document.getElementById('playerSub').textContent = `الصف ${grade} · ${subject} · ${kind}`;
+    document.getElementById('playerAttrib').textContent = attrib;
+    toView('view-player');
+  }
+
+  // مثال حقيقي وكامل لورقة عمل ومفتاح تصحيح — لدرس العرض الأساسي بالنموذج
+  const worksheetBank = {
+    "حل المعادلات الخطية البسيطة": {
+      questions: [
+        { q: "س + ٥ = ١٢", a: "س = ٧" },
+        { q: "٢س = ١٨", a: "س = ٩" },
+        { q: "س − ٧ = ٣", a: "س = ١٠" },
+        { q: "٣س + ٤ = ١٩", a: "س = ٥" },
+        { q: "س ÷ ٢ = ٩", a: "س = ١٨" },
+      ],
+    },
+  };
+  let wsAnswersShown = false;
+
+  function openWorksheet(){
+    const title = activeCurricVersion ? activeCurricVersion.title : document.getElementById('playerTitle').textContent;
+    document.getElementById('wsTitle').textContent = `ورقة عمل — ${title}`;
+    document.getElementById('wsSub').textContent = `${subject} · الصف ${grade}`;
+    const body = document.getElementById('wsBody');
+    const bank = worksheetBank[title];
+    wsAnswersShown = false;
+    document.getElementById('wsToggleBtn').textContent = 'إظهار مفتاح التصحيح';
+
+    if (bank) {
+      body.innerHTML = bank.questions.map((item, i) => `
+        <div class="ws-question">
+          <div class="qn">السؤال ${i+1}</div>
+          <div class="qtext">${item.q}</div>
+          <div class="ws-answer" data-ans>الإجابة: ${item.a}</div>
+        </div>
+      `).join('');
+      document.getElementById('wsToggleBtn').style.display = 'block';
+      body.innerHTML += '<div class="ws-note" style="margin-top:10px;">مثال توضيحي لشكل المرفق، ولا يمثل محتوى معتمداً.</div>';
+    } else {
+      body.innerHTML = `<div class="ws-note">هذا مثال توضيحي لآلية عرض ورقة العمل داخل الوحدة. عند التطبيق الفعلي، يُرفق بكل درس ورقة عمل ومفتاح تصحيح مطابقين لمحتواه بنفس هذا الأسلوب.</div>`;
+      document.getElementById('wsToggleBtn').style.display = 'none';
+    }
+    toView('view-worksheet');
+  }
+
+  function toggleAnswers(){
+    wsAnswersShown = !wsAnswersShown;
+    document.querySelectorAll('[data-ans]').forEach(el => el.classList.toggle('show', wsAnswersShown));
+    document.getElementById('wsToggleBtn').textContent = wsAnswersShown ? 'إخفاء مفتاح التصحيح' : 'إظهار مفتاح التصحيح';
+  }
+
+  // مثال حقيقي لاختبار قصير (اختيار من متعدد) — لدرس العرض الأساسي
+  const quizBank = {
+    "حل المعادلات الخطية البسيطة": [
+      { q: "ما ناتج حل المعادلة: س + ٦ = ١٤ ؟", options: ["س = ٦", "س = ٨", "س = ٢٠"], correct: 1 },
+      { q: "ما ناتج حل المعادلة: ٣س = ٢١ ؟", options: ["س = ٣", "س = ١٨", "س = ٧"], correct: 2 },
+      { q: "ما ناتج حل المعادلة: س − ٤ = ٩ ؟", options: ["س = ٥", "س = ١٣", "س = ٣٦"], correct: 1 },
+    ],
+  };
+  let quizAnswersShown = false;
+  Object.assign(worksheetBank, {"الكسور العشرية وعملياتها": {"questions": [{"q": "٢٫٥ + ١٫٣ = ؟", "a": "٣٫٨"}, {"q": "٤٫٧ − ١٫٢ = ؟", "a": "٣٫٥"}, {"q": "٣٫٦ + ٠٫٤ = ؟", "a": "٤"}, {"q": "٥ − ٢٫٣ = ؟", "a": "٢٫٧"}, {"q": "٠٫٧٥ + ٠٫٢٥ = ؟", "a": "١"}]}, "النسبة والتناسب": {"questions": [{"q": "ثمن ٣ أقلام ٦ ريالات. كم ثمن ٥ أقلام؟", "a": "١٠ ريالات"}, {"q": "اكتب النسبة ٦ : ٩ في أبسط صورة", "a": "٢ : ٣"}, {"q": "أوجد س في التناسب: ٤ : ٥ = ١٢ : س", "a": "س = ١٥"}, {"q": "تقطع سيارة ٦٠ كم في ساعة. كم تقطع في ٣ ساعات؟", "a": "١٨٠ كم"}, {"q": "اكتب نسبة ١٠ إلى ٢٥ في أبسط صورة", "a": "٢ : ٥"}]}, "نظرية فيثاغورس": {"questions": [{"q": "مثلث قائم ضلعاه ٣ و٤. أوجد الوتر", "a": "٥"}, {"q": "مثلث قائم ضلعاه ٦ و٨. أوجد الوتر", "a": "١٠"}, {"q": "وتر مثلث قائم ١٣ وأحد ضلعيه ٥. أوجد الضلع الآخر", "a": "١٢"}, {"q": "مثلث قائم ضلعاه ٩ و١٢. أوجد الوتر", "a": "١٥"}, {"q": "هل ٥ و١٢ و١٣ أضلاع مثلث قائم؟", "a": "نعم، لأن ٢٥ + ١٤٤ = ١٦٩"}]}, "الدوال الخطية وتمثيلها البياني": {"questions": [{"q": "د(س) = ٢س + ١. أوجد د(٣)", "a": "٧"}, {"q": "د(س) = س − ٤. أوجد د(١٠)", "a": "٦"}, {"q": "د(س) = ٣س. أوجد د(٠)", "a": "٠"}, {"q": "ميل المستقيم المار بالنقطتين (٠، ٠) و(٢، ٦)", "a": "٣"}, {"q": "د(س) = ٥ − س. أوجد د(٢)", "a": "٣"}]}, "دورة الماء في الطبيعة": {"questions": [{"q": "ما اسم تحوّل الماء السائل إلى بخار؟", "a": "التبخر"}, {"q": "ما اسم تحوّل بخار الماء إلى قطرات؟", "a": "التكاثف"}, {"q": "ما المصدر الرئيس لطاقة تبخر مياه البحار؟", "a": "الشمس"}, {"q": "ما اسم نزول الماء من السحب إلى الأرض؟", "a": "الهطول"}, {"q": "أين تتجمع مياه الأمطار؟", "a": "في الأنهار والبحار والمياه الجوفية"}]}, "الجهاز الهضمي في جسم الإنسان": {"questions": [{"q": "ما أول عضو يدخل إليه الطعام؟", "a": "الفم"}, {"q": "ما العضو الذي ينقل الطعام من الفم إلى المعدة؟", "a": "المريء"}, {"q": "أين يُمتص معظم الغذاء المهضوم؟", "a": "الأمعاء الدقيقة"}, {"q": "ماذا يحدث للماء في الأمعاء الغليظة؟", "a": "يُمتص إلى الجسم"}, {"q": "ما العضو الذي ينتج الصفراء؟", "a": "الكبد"}]}, "الخلية ومكوناتها": {"questions": [{"q": "ما مركز التحكم في الخلية؟", "a": "النواة"}, {"q": "ما الذي يحيط بالخلية النباتية ويعطيها شكلها؟", "a": "الجدار الخلوي"}, {"q": "أي عُضيّات الخلية تحتوي الكلوروفيل؟", "a": "البلاستيدات الخضراء"}, {"q": "أي عُضيّة تنتج الطاقة؟", "a": "الميتوكوندريا"}, {"q": "ماذا ينظّم الغشاء الخلوي؟", "a": "دخول المواد وخروجها"}]}, "القوى والحركة": {"questions": [{"q": "ما وحدة قياس القوة؟", "a": "نيوتن"}, {"q": "ما القوة التي تقاوم حركة سطحين متلامسين؟", "a": "الاحتكاك"}, {"q": "ماذا تفعل قوة دفع على جسم ساكن؟", "a": "تحرّكه"}, {"q": "ما القوة التي تجذب الأجسام نحو الأرض؟", "a": "الجاذبية"}, {"q": "ماذا يحدث إذا تساوت قوتان متعاكستان على جسم؟", "a": "تتزن القوى ولا تتغير حركته"}]}, "التفاعلات الكيميائية الأساسية": {"questions": [{"q": "ذوبان السكر في الماء: تغير فيزيائي أم كيميائي؟", "a": "فيزيائي"}, {"q": "صدأ الحديد: تغير فيزيائي أم كيميائي؟", "a": "كيميائي"}, {"q": "احتراق الخشب: تغير فيزيائي أم كيميائي؟", "a": "كيميائي"}, {"q": "انصهار الجليد: تغير فيزيائي أم كيميائي؟", "a": "فيزيائي"}, {"q": "اذكر علامة على حدوث تفاعل كيميائي", "a": "تصاعد غاز أو تغير اللون أو ظهور راسب أو تغير الحرارة"}]}, "قراءة نص وصفي وتحليل عناصره": {"questions": [{"q": "ما المقصود بالفكرة العامة للنص؟", "a": "الموضوع الرئيس الذي يدور حوله النص"}, {"q": "على ماذا يعتمد النص الوصفي؟", "a": "وصف الأشخاص والأماكن والأشياء بالتفاصيل"}, {"q": "اذكر حاسة يستعين بها الكاتب في الوصف", "a": "البصر أو السمع أو الشم أو اللمس"}, {"q": "ما الفرق بين الفكرة العامة والتفاصيل؟", "a": "العامة هي الأساس والتفاصيل تدعمها"}, {"q": "ما فائدة عنوان النص؟", "a": "يدل على موضوعه"}]}, "الفعل الماضي والمضارع والأمر": {"questions": [{"q": "ما زمن الفعل «كتبَ»؟", "a": "ماضٍ"}, {"q": "ما زمن الفعل «يلعبُ»؟", "a": "مضارع"}, {"q": "ما زمن الفعل «اجلسْ»؟", "a": "أمر"}, {"q": "حوّل «ذهبَ» إلى المضارع", "a": "يذهبُ"}, {"q": "حوّل «يقرأُ» إلى الأمر", "a": "اقرأْ"}]}, "أسلوبا النداء والاستفهام": {"questions": [{"q": "أكمل بأداة نداء: «... محمدُ، تعالَ»", "a": "يا"}, {"q": "أداة استفهام عن العاقل", "a": "مَن"}, {"q": "أداة استفهام عن غير العاقل", "a": "ما"}, {"q": "أداة استفهام عن الزمان", "a": "متى"}, {"q": "أداة استفهام عن المكان", "a": "أين"}]}, "التمييز والحال": {"questions": [{"q": "ما الحال في: جاءَ الطالبُ مسرعاً؟", "a": "مسرعاً"}, {"q": "ما التمييز في: اشتريتُ عشرينَ كتاباً؟", "a": "كتاباً"}, {"q": "ما حكم إعراب الحال غالباً؟", "a": "منصوب"}, {"q": "ما التمييز في: طابَ المعلمُ نفساً؟", "a": "نفساً"}, {"q": "ماذا يبيّن الحال؟", "a": "هيئة صاحبه وقت وقوع الفعل"}]}, "أسلوب الشرط": {"questions": [{"q": "ما أداة الشرط في: إنْ تجتهدْ تنجحْ؟", "a": "إنْ"}, {"q": "ما فعل الشرط في الجملة نفسها؟", "a": "تجتهدْ"}, {"q": "ما جواب الشرط فيها؟", "a": "تنجحْ"}, {"q": "ما علامة جزم المضارع الصحيح الآخر؟", "a": "السكون"}, {"q": "أداة شرط تدل على الزمان", "a": "متى"}]}, "Simple Present Tense": {"questions": [{"q": "She ___ (go) to school every day.", "a": "goes"}, {"q": "They ___ (play) football on Fridays.", "a": "play"}, {"q": "He ___ (not like) tea.", "a": "doesn't like"}, {"q": "___ you (study) every day?", "a": "Do you study"}, {"q": "The sun ___ (rise) in the east.", "a": "rises"}]}, "Reading a Short Story": {"questions": [{"q": "Who is the main character?", "a": "The person the story is mostly about"}, {"q": "What is the setting?", "a": "Where and when the story happens"}, {"q": "What is the plot?", "a": "The main events of the story"}, {"q": "What does 'problem' mean in a story?", "a": "The difficulty the character faces"}, {"q": "A good title tells us...", "a": "What the story is about"}]}, "Comparatives & Superlatives": {"questions": [{"q": "tall → (comparative)", "a": "taller"}, {"q": "big → (comparative)", "a": "bigger"}, {"q": "beautiful → (comparative)", "a": "more beautiful"}, {"q": "good → (comparative)", "a": "better"}, {"q": "long → (superlative)", "a": "the longest"}]}, "Past Continuous Tense": {"questions": [{"q": "I ___ (read) when he called.", "a": "was reading"}, {"q": "They ___ (play) at 5 pm yesterday.", "a": "were playing"}, {"q": "She ___ (not sleep) at ten.", "a": "wasn't sleeping"}, {"q": "What ___ you (do) at 8 o'clock?", "a": "were you doing"}, {"q": "We ___ (watch) TV all evening.", "a": "were watching"}]}, "Reported Speech Basics": {"questions": [{"q": "\"I am happy,\" he said.", "a": "He said (that) he was happy."}, {"q": "\"I like tea,\" she said.", "a": "She said (that) she liked tea."}, {"q": "\"We play football,\" they said.", "a": "They said (that) they played football."}, {"q": "\"I will help you,\" he said.", "a": "He said (that) he would help me."}, {"q": "\"I live in Nizwa,\" she said.", "a": "She said (that) she lived in Nizwa."}]}, "آداب التعامل مع الوالدين": {"questions": [{"q": "ما الدليل على عِظَم حق الوالدين؟", "a": "قرن الله عبادته ببرّهما"}, {"q": "اذكر مثالاً على بر الأم", "a": "خدمتها ومساعدتها وطاعتها في المعروف"}, {"q": "ما حكم قول «أفٍّ» للوالدين؟", "a": "محرَّم، لأن الله نهى عنه"}, {"q": "ماذا نفعل للوالدين بعد وفاتهما؟", "a": "الدعاء لهما والصدقة عنهما"}, {"q": "من أحق الناس بحسن الصحبة؟", "a": "الأم ثم الأم ثم الأم ثم الأب"}]}, "قصة من قصص الأنبياء": {"questions": [{"q": "ما المقصود بالعبرة؟", "a": "الدرس المستفاد من القصة"}, {"q": "اذكر خلقاً تحلّى به الأنبياء", "a": "الصدق أو الصبر أو الأمانة"}, {"q": "لماذا يقصّ القرآن علينا قصص الأنبياء؟", "a": "للعبرة والموعظة وتثبيت القلوب"}, {"q": "ماذا نتعلم من صبر الأنبياء؟", "a": "الصبر على الأذى وعدم اليأس"}, {"q": "كيف أقتدي بالأنبياء في دراستي؟", "a": "بالصدق والاجتهاد والأمانة"}]}, "أركان الصلاة وشروطها": {"questions": [{"q": "كم عدد الصلوات المفروضة في اليوم والليلة؟", "a": "خمس صلوات"}, {"q": "اذكر شرطاً من شروط الصلاة", "a": "الطهارة أو استقبال القبلة أو دخول الوقت أو ستر العورة"}, {"q": "اذكر ركناً من أركان الصلاة", "a": "القيام أو الركوع أو السجود"}, {"q": "بماذا تبدأ الصلاة؟", "a": "بتكبيرة الإحرام"}, {"q": "بماذا تنتهي الصلاة؟", "a": "بالتسليم"}]}, "الأخلاق في التعامل مع الآخرين": {"questions": [{"q": "ما معنى الصدق؟", "a": "قول الحق ومطابقة القول للواقع"}, {"q": "ماذا تفعل إذا أخطأت في حق زميلك؟", "a": "أعتذر إليه"}, {"q": "ما جزاء الأمانة؟", "a": "محبة الناس ورضا الله"}, {"q": "اذكر مثالاً على التعاون", "a": "مساعدة الزميل على المذاكرة"}, {"q": "ما حكم الغيبة؟", "a": "محرَّمة"}]}, "مقدمة في فقه المعاملات": {"questions": [{"q": "ما حكم الربا؟", "a": "حرام"}, {"q": "اذكر مثالاً على معاملة مباحة", "a": "البيع والشراء بالتراضي"}, {"q": "اذكر ركناً من أركان البيع", "a": "الإيجاب والقبول أو البائع والمشتري أو السلعة"}, {"q": "ما حكم الغش في البيع؟", "a": "حرام"}, {"q": "ماذا تعني الأمانة في المعاملات؟", "a": "أداء الحقوق لأصحابها"}]}, "جغرافية سلطنة عُمان: المحافظات": {"questions": [{"q": "كم محافظة في سلطنة عُمان؟", "a": "١١ محافظة"}, {"q": "ما عاصمة السلطنة؟", "a": "مسقط"}, {"q": "أي محافظة تقع في أقصى الجنوب؟", "a": "ظفار"}, {"q": "أين تقع محافظة مسندم؟", "a": "في أقصى شمال السلطنة"}, {"q": "في أي محافظة يقع الجبل الأخضر؟", "a": "الداخلية"}]}, "التاريخ العُماني: بدايات النهضة": {"questions": [{"q": "متى بدأت النهضة المعاصرة؟", "a": "عام ١٩٧٠م"}, {"q": "من قاد النهضة المعاصرة؟", "a": "السلطان قابوس بن سعيد، طيّب الله ثراه"}, {"q": "اذكر قطاعاً توسّع بعد ١٩٧٠م", "a": "التعليم أو الصحة أو الطرق"}, {"q": "ماذا تعني النهضة؟", "a": "بناء الدولة الحديثة وتطوير الخدمات"}, {"q": "لماذا كان التعليم أولوية؟", "a": "لبناء الإنسان العُماني"}]}, "الموارد الطبيعية في الوطن العربي": {"questions": [{"q": "أبرز مصدر للطاقة في دول الخليج العربي", "a": "النفط والغاز"}, {"q": "ما مورد وادي النيل الأهم؟", "a": "مياه النيل والتربة الخصبة"}, {"q": "دولة عربية مشهورة بالفوسفات", "a": "المغرب"}, {"q": "اذكر مورداً متجدداً", "a": "الشمس أو الرياح"}, {"q": "ما الفرق بين المتجدد وغير المتجدد؟", "a": "المتجدد لا ينفد وغير المتجدد ينفد"}]}, "النظام السياسي في سلطنة عُمان": {"questions": [{"q": "ما الوثيقة الأساسية للدولة؟", "a": "النظام الأساسي للدولة"}, {"q": "ما نظام الحكم في السلطنة؟", "a": "سلطاني وراثي"}, {"q": "ما سلطات الدولة؟", "a": "التشريعية والتنفيذية والقضائية"}, {"q": "مم يتكوّن مجلس عُمان؟", "a": "مجلس الدولة ومجلس الشورى"}, {"q": "كيف يصل أعضاء مجلس الشورى؟", "a": "بالانتخاب من المواطنين"}]}, "قضايا بيئية معاصرة": {"questions": [{"q": "ما التغير المناخي؟", "a": "ارتفاع حرارة الأرض نتيجة زيادة الغازات الدفيئة"}, {"q": "ما سبب تلوث الهواء؟", "a": "عوادم المصانع والمركبات"}, {"q": "كيف نقلّل النفايات؟", "a": "بإعادة التدوير وتقليل الاستهلاك"}, {"q": "ما التصحّر؟", "a": "تحوّل الأراضي الخصبة إلى جافة"}, {"q": "ما دورك في الحفاظ على البيئة؟", "a": "ترشيد الماء والكهرباء وعدم رمي النفايات"}]}});
+  Object.assign(quizBank, {"الكسور العشرية وعملياتها": [{"q": "ناتج: ١٫٥ + ٢٫٣", "options": ["٣٫٦", "٣٫٨", "٤٫٠"], "correct": 1}, {"q": "ناتج: ٦٫٤ − ٢٫١", "options": ["٤٫٣", "٤٫٥", "٣٫٣"], "correct": 0}, {"q": "ناتج: ٠٫٥ + ٠٫٧٥", "options": ["١٫٢٥", "١٫٢", "١٫٥"], "correct": 0}], "النسبة والتناسب": [{"q": "أبسط صورة للنسبة ١٢ : ١٨", "options": ["٢ : ٣", "٣ : ٤", "٦ : ٩"], "correct": 0}, {"q": "ثمن ٢ كغم تفاح ٤ ريالات، فثمن ٥ كغم", "options": ["٨ ريالات", "١٠ ريالات", "١٢ ريالاً"], "correct": 1}, {"q": "قيمة س في: ٢ : ٣ = ٨ : س", "options": ["١٢", "٩", "١٦"], "correct": 0}], "نظرية فيثاغورس": [{"q": "ضلعا مثلث قائم ٥ و١٢، فالوتر", "options": ["١٣", "١٧", "١٠"], "correct": 0}, {"q": "وتر ١٠ وأحد الضلعين ٦، فالضلع الآخر", "options": ["٤", "٨", "٩"], "correct": 1}, {"q": "أي الأعداد أطوال مثلث قائم؟", "options": ["٢ و٣ و٤", "٦ و٨ و١٠", "٤ و٥ و٧"], "correct": 1}], "الدوال الخطية وتمثيلها البياني": [{"q": "ميل المستقيم ص = ٤س + ٢", "options": ["٢", "٤", "٦"], "correct": 1}, {"q": "د(س) = ٢س − ١. قيمة د(٥)", "options": ["٩", "١١", "٨"], "correct": 0}, {"q": "المستقيم ص = ٣س + ٥ يقطع محور ص عند", "options": ["(٠، ٥)", "(٥، ٠)", "(٣، ٠)"], "correct": 0}], "دورة الماء في الطبيعة": [{"q": "في أي مرحلة تتكوّن السحب؟", "options": ["التكاثف", "الهطول", "التبخر"], "correct": 0}, {"q": "يحدث التبخر بسبب", "options": ["برودة الجو", "حرارة الشمس", "الرياح فقط"], "correct": 1}, {"q": "من أشكال الهطول", "options": ["المطر", "التبخر", "التكاثف"], "correct": 0}], "الجهاز الهضمي في جسم الإنسان": [{"q": "يبدأ الهضم الكيميائي في", "options": ["الفم", "المعدة", "المريء"], "correct": 0}, {"q": "ينقل الطعام إلى المعدة", "options": ["القصبة الهوائية", "المريء", "الكبد"], "correct": 1}, {"q": "يُمتص معظم الغذاء في", "options": ["الأمعاء الدقيقة", "المعدة", "الفم"], "correct": 0}], "الخلية ومكوناتها": [{"q": "يوجد في الخلية النباتية فقط", "options": ["الجدار الخلوي", "النواة", "الغشاء الخلوي"], "correct": 0}, {"q": "وظيفة البلاستيدات الخضراء", "options": ["التنفس الخلوي", "البناء الضوئي", "الهضم"], "correct": 1}, {"q": "النواة", "options": ["تتحكم بأنشطة الخلية", "تصنع الغذاء", "تحمي الخلية فقط"], "correct": 0}], "القوى والحركة": [{"q": "وحدة قياس القوة", "options": ["نيوتن", "متر", "كيلوجرام"], "correct": 0}, {"q": "يقلّل الاحتكاك", "options": ["تزييت السطح", "تخشين السطح", "زيادة الوزن"], "correct": 0}, {"q": "الجاذبية", "options": ["تجذب الأجسام نحو الأرض", "تدفعها للأعلى", "تدفعها جانباً"], "correct": 0}], "التفاعلات الكيميائية الأساسية": [{"q": "أي مما يلي تغير فيزيائي؟", "options": ["تكسير الزجاج", "حرق الورق", "تعفن الفاكهة"], "correct": 0}, {"q": "مثال على تفاعل كيميائي", "options": ["صدأ الحديد", "تبخر الماء", "قص الورق"], "correct": 0}, {"q": "هل تتكوّن مادة جديدة في التغير الفيزيائي؟", "options": ["نعم", "لا", "دائماً"], "correct": 1}], "قراءة نص وصفي وتحليل عناصره": [{"q": "هدف النص الوصفي", "options": ["تصوير الشيء للقارئ", "سرد أحداث متتابعة", "إقناع القارئ برأي"], "correct": 0}, {"q": "الفكرة العامة هي", "options": ["أهم فكرة يدور حولها النص", "أول جملة فقط", "آخر كلمة"], "correct": 0}, {"q": "من أدوات الوصف", "options": ["الصفات والتشبيه", "الأرقام فقط", "علامات الترقيم فقط"], "correct": 0}], "الفعل الماضي والمضارع والأمر": [{"q": "«سافرَ» فعل", "options": ["ماضٍ", "مضارع", "أمر"], "correct": 0}, {"q": "«تكتبونَ» فعل", "options": ["ماضٍ", "مضارع", "أمر"], "correct": 1}, {"q": "«افتحْ» فعل", "options": ["ماضٍ", "مضارع", "أمر"], "correct": 2}], "أسلوبا النداء والاستفهام": [{"q": "من أدوات النداء", "options": ["يا", "هل", "ما"], "correct": 0}, {"q": "تُستخدم «هل» في", "options": ["استفهام جوابه نعم أو لا", "النداء", "النفي"], "correct": 0}, {"q": "يُسأل بـ«متى» عن", "options": ["الزمان", "المكان", "العاقل"], "correct": 0}], "التمييز والحال": [{"q": "الحال في: عادَ الجنديُّ منتصراً", "options": ["منتصراً", "عادَ", "الجنديُّ"], "correct": 0}, {"q": "التمييز في: عندي خمسونَ ريالاً", "options": ["ريالاً", "عندي", "خمسونَ"], "correct": 0}, {"q": "الحال والتمييز يكونان غالباً", "options": ["منصوبين", "مرفوعين", "مجرورين"], "correct": 0}], "أسلوب الشرط": [{"q": "أداة الشرط في: مَن يزرعْ يحصدْ", "options": ["مَن", "يزرعْ", "يحصدْ"], "correct": 0}, {"q": "جواب الشرط في: إنْ تدرسْ تنجحْ", "options": ["تنجحْ", "تدرسْ", "إنْ"], "correct": 0}, {"q": "يتكوّن أسلوب الشرط من", "options": ["أداة وفعل شرط وجواب", "مبتدأ وخبر فقط", "فاعل ومفعول فقط"], "correct": 0}], "Simple Present Tense": [{"q": "My brother ___ in Muscat.", "options": ["live", "lives", "living"], "correct": 1}, {"q": "We ___ TV in the evening.", "options": ["watch", "watches", "watching"], "correct": 0}, {"q": "She ___ like fish.", "options": ["don't", "doesn't", "isn't"], "correct": 1}], "Reading a Short Story": [{"q": "The setting is", "options": ["where and when the story happens", "who tells the story", "the last line"], "correct": 0}, {"q": "The characters are", "options": ["people or animals in the story", "only the pictures", "the title"], "correct": 0}, {"q": "The ending usually shows", "options": ["how the problem is solved", "the title", "the author's name"], "correct": 0}], "Comparatives & Superlatives": [{"q": "Ali is ___ than Omar. (tall)", "options": ["tall", "taller", "tallest"], "correct": 1}, {"q": "This is the ___ book. (interesting)", "options": ["more interesting", "most interesting", "interestinger"], "correct": 1}, {"q": "She is ___ than her sister. (good)", "options": ["good", "better", "best"], "correct": 1}], "Past Continuous Tense": [{"q": "At 7 pm, I ___ dinner.", "options": ["was having", "am having", "have had"], "correct": 0}, {"q": "They ___ when it rained.", "options": ["was playing", "were playing", "play"], "correct": 1}, {"q": "The past continuous is formed with", "options": ["was/were + verb-ing", "did + verb", "have + verb-ed"], "correct": 0}], "Reported Speech Basics": [{"q": "He said, \"I am tired.\" → He said he ___ tired.", "options": ["was", "is", "will be"], "correct": 0}, {"q": "\"We study.\" → They said they ___.", "options": ["studied", "study", "studying"], "correct": 0}, {"q": "In reported speech, the present usually changes to", "options": ["past", "future", "no change"], "correct": 0}], "آداب التعامل مع الوالدين": [{"q": "من آداب الحديث مع الوالدين", "options": ["الكلام بلين واحترام", "رفع الصوت", "تجاهل الكلام"], "correct": 0}, {"q": "بعد وفاة الوالدين نبقى على برّهما بـ", "options": ["الدعاء لهما", "نسيانهما", "لا شيء"], "correct": 0}, {"q": "حكم بر الوالدين", "options": ["واجب", "اختياري", "مكروه"], "correct": 0}], "قصة من قصص الأنبياء": [{"q": "يقصّ القرآن القصص لـ", "options": ["العبرة والموعظة", "التسلية فقط", "الإطالة"], "correct": 0}, {"q": "من صفات الأنبياء", "options": ["الصدق والأمانة", "الكذب", "الغش"], "correct": 0}, {"q": "العبرة هي", "options": ["الدرس المستفاد", "أول القصة", "اسم النبي"], "correct": 0}], "أركان الصلاة وشروطها": [{"q": "استقبال القبلة", "options": ["شرط", "ركن", "سنة"], "correct": 0}, {"q": "من أركان الصلاة", "options": ["الركوع", "الأذان", "الإقامة"], "correct": 0}, {"q": "الصلوات المفروضة خمس في", "options": ["اليوم والليلة", "الأسبوع", "الشهر"], "correct": 0}], "الأخلاق في التعامل مع الآخرين": [{"q": "«الكلمة الطيبة صدقة» تحثّ على", "options": ["حسن الكلام", "الصمت دائماً", "الغضب"], "correct": 0}, {"q": "الغيبة هي", "options": ["ذكر الأخ بما يكره في غيبته", "مدحه", "السؤال عنه"], "correct": 0}, {"q": "من الخلق الحسن", "options": ["الصدق والتواضع", "الكبر", "الغش"], "correct": 0}], "مقدمة في فقه المعاملات": [{"q": "يقوم البيع على", "options": ["التراضي", "الإكراه", "الخداع"], "correct": 0}, {"q": "حكم الغش", "options": ["حرام", "مباح", "مستحب"], "correct": 0}, {"q": "الأصل في المعاملات المالية", "options": ["الإباحة إلا ما دلّ دليل على تحريمه", "التحريم", "الكراهة"], "correct": 0}], "جغرافية سلطنة عُمان: المحافظات": [{"q": "عدد محافظات السلطنة", "options": ["١١", "٩", "١٣"], "correct": 0}, {"q": "عاصمة السلطنة", "options": ["مسقط", "صلالة", "نزوى"], "correct": 0}, {"q": "تقع ظفار في", "options": ["الجنوب", "الشمال", "الغرب"], "correct": 0}], "التاريخ العُماني: بدايات النهضة": [{"q": "بدأت النهضة المعاصرة عام", "options": ["١٩٧٠م", "١٩٩٠م", "١٩٥٠م"], "correct": 0}, {"q": "من قطاعات النهضة", "options": ["التعليم والصحة والطرق", "الاستيراد فقط", "لا شيء"], "correct": 0}, {"q": "النهضة تعني", "options": ["بناء الدولة الحديثة وتطويرها", "الإغلاق", "التوقف"], "correct": 0}], "الموارد الطبيعية في الوطن العربي": [{"q": "النفط مورد", "options": ["غير متجدد", "متجدد", "لا ينضب"], "correct": 0}, {"q": "الشمس مورد", "options": ["متجدد", "غير متجدد", "ينفد"], "correct": 0}, {"q": "ينتشر النفط بكثرة في", "options": ["دول الخليج العربي", "القطب", "الأمازون"], "correct": 0}], "النظام السياسي في سلطنة عُمان": [{"q": "يتكوّن مجلس عُمان من", "options": ["مجلس الدولة ومجلس الشورى", "مجلس الوزراء فقط", "لا شيء"], "correct": 0}, {"q": "أعضاء مجلس الشورى", "options": ["ينتخبهم المواطنون", "يُعيَّنون كلهم", "يرثون المقعد"], "correct": 0}, {"q": "النظام الأساسي للدولة", "options": ["الوثيقة الأساسية", "قانون مروري", "لائحة مدرسية"], "correct": 0}], "قضايا بيئية معاصرة": [{"q": "تساعد إعادة التدوير في", "options": ["تقليل النفايات", "زيادة التلوث", "إتلاف الموارد"], "correct": 0}, {"q": "من أسباب تلوث الهواء", "options": ["عوادم المركبات", "زراعة الأشجار", "الأمطار"], "correct": 0}, {"q": "ترشيد الماء يعني", "options": ["الحفاظ على الموارد", "هدرها", "تلويثها"], "correct": 0}]});
+
+
+  function openQuiz(){
+    const title = activeCurricVersion ? activeCurricVersion.title : document.getElementById('playerTitle').textContent;
+    document.getElementById('quizTitle').textContent = `اختبار قصير — ${title}`;
+    document.getElementById('quizSub').textContent = `${subject} · الصف ${grade}`;
+    const body = document.getElementById('quizBody');
+    const bank = quizBank[title];
+    quizAnswersShown = false;
+    body.classList.remove('answers-shown');
+    document.getElementById('quizToggleBtn').textContent = 'إظهار الإجابات الصحيحة';
+
+    if (bank) {
+      body.innerHTML = bank.map((item, i) => `
+        <div class="quiz-question">
+          <div class="qn">${i+1}. ${item.q}</div>
+          ${item.options.map((opt, oi) => `
+            <div class="quiz-option ${oi === item.correct ? 'correct' : ''}">
+              <span>${opt}</span>
+              <span class="ok-mark">✓ صحيحة</span>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+      document.getElementById('quizToggleBtn').style.display = 'block';
+    } else {
+      body.innerHTML = `<div class="ws-note">هذا مثال توضيحي لآلية عرض الاختبار القصير داخل الوحدة. عند التطبيق الفعلي، يُرفق بكل درس اختبار قصير من إعداد معلمة المادة بنفس هذا الأسلوب.</div>`;
+      document.getElementById('quizToggleBtn').style.display = 'none';
+    }
+    toView('view-quiz');
+  }
+
+  function toggleQuizAnswers(){
+    quizAnswersShown = !quizAnswersShown;
+    document.getElementById('quizBody').classList.toggle('answers-shown', quizAnswersShown);
+    document.getElementById('quizToggleBtn').textContent = quizAnswersShown ? 'إخفاء الإجابات الصحيحة' : 'إظهار الإجابات الصحيحة';
+  }
+
+  function openExam(){
+    const title = activeCurricVersion ? activeCurricVersion.title : document.getElementById('playerTitle').textContent;
+    document.getElementById('examFileName').textContent = `اختبار الفصل الدراسي — ${subject} (الصف ${grade})`;
+    const teacher = (activeCurricVersion && activeCurricVersion.teacher) ? activeCurricVersion.teacher : teacherOf[subject];
+    document.getElementById('examTeacher').textContent = `مرفق بواسطة: ${teacher}`;
+    toView('view-exam');
+  }
+
+  function openExternal(){
+    if (!activeExternal) return;
+    window.open(activeExternal.url, '_blank', 'noopener');
+  }
+
+  let attachFrom = 'view-player';
+  function backFromAttach(){ toView(attachFrom); }
+  function toView(id){
+    const cur = document.querySelector('.view.active');
+    if(cur && ['view-worksheet','view-quiz','view-exam'].includes(id) && !['view-worksheet','view-quiz','view-exam'].includes(cur.id)) attachFrom = cur.id;
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function resetAll(){
+    grade = null; subject = null;
+    document.querySelectorAll('#gradeRow .chip').forEach(c=>c.classList.remove('selected'));
+    document.querySelectorAll('.subject-card').forEach(c=>c.style.borderColor='');
+    document.getElementById('goBtn').disabled = true;
+    document.getElementById('topSub').textContent = 'اختاري الصف والمادة لعرض الحصة الجاهزة';
+  }
+
+  // ===== مساهمة المعلمات =====
+  function openContribute(){
+    document.getElementById('contribForm').style.display='block';
+    document.getElementById('contribDone').style.display='none';
+    toView('view-contribute');
+  }
+  function submitContribute(){
+    const n=document.getElementById('cName').value.trim(), e=document.getElementById('cEmp').value.trim(), t=document.getElementById('cTitle').value.trim();
+    const d=document.getElementById('contribDone');
+    if(!n||!e||!t){ d.className='link-status warn'; d.style.display='block'; d.textContent='أكملي الاسم والرقم الوظيفي وعنوان الدرس أولاً.'; return; }
+    d.className='link-status ok'; d.style.display='block';
+    d.innerHTML='✅ <b>تم استلام مادتك (محاكاة)</b> — ستظهر بعد المراجعة باسم '+n.replace(/</g,'')+'. لم يُحفظ أي شيء في هذا النموذج.';
+  }
+
+  // ===== خانة الفتح: نور أو مستقل =====
+  let openMode = 'noor', noorFault = false;
+  function paintMode(){
+    const st = document.getElementById('linkStatus'), note = document.querySelector('.mode-note');
+    document.querySelectorAll('#modeRow .chip').forEach(c=>c.classList.toggle('selected', c.dataset.mode===openMode));
+    if(openMode==='solo'){
+      st.className='link-status';
+      st.innerHTML='💻 <b>تشغيل مستقل</b> — يعمل مؤقتاً إلى حين تفعيل الوحدة في «نور» بمدرستك. المحتوى والمراحل نفسها.';
+      note.textContent='وضع التشغيل: مستقل (مؤقت) — الوحدة مقترحة ضمن منصة «نور»';
+    } else if(noorFault){
+      st.className='link-status warn';
+      st.innerHTML='⚠️ <b>تعذّر الاتصال بمنصة «نور»</b> — يبدو أن بالمنصة مشكلة حالياً. هذا لا يوقف الحصة: يمكن تشغيلها بشكل مستقل الآن.<br><button id="soloBtn">تشغيل بشكل مستقل</button>';
+      document.getElementById('soloBtn').onclick=()=>{openMode='solo';paintMode();};
+      note.textContent='وضع التشغيل: تعذّر الاتصال بـ«نور» — يمكن العمل مستقلاً';
+    } else {
+      st.className='link-status ok';
+      st.innerHTML='✅ <b>مرتبطة بمنصة «نور»</b> — يُفتح المحتوى من المنصة، وتُحفظ نتيجة الصف فيها.';
+      note.textContent='وضع التشغيل: مرتبطة بمنصة «نور»';
+    }
+  }
+  document.getElementById('modeRow').addEventListener('click', e=>{
+    const c=e.target.closest('.chip'); if(!c) return; openMode=c.dataset.mode;
+    if(openMode==='noor'){ const st=document.getElementById('linkStatus'); st.className='link-status'; st.textContent='جارٍ التحقق من الاتصال بمنصة «نور»…'; setTimeout(paintMode,600); document.querySelectorAll('#modeRow .chip').forEach(x=>x.classList.toggle('selected', x.dataset.mode==='noor')); }
+    else paintMode();
+  });
+  document.getElementById('faultSim').addEventListener('change', e=>{ noorFault=e.target.checked; paintMode(); });
+  paintMode();
+
+  // ===== الحصة الكاملة بالمؤقت =====
+  let periodLen = 30, stageIdx = 0, remain = 0, tmr = null;
+  const stageMeta = [
+    ['الهدف على الشاشة', null, ''],
+    ['مقطع الشرح ٦ د + نقاش قصير', 'openPlayer(\'curric\')', 'فتح الشرح'],
+    ['ورقة العمل فردياً ثم مقارنة الإجابات', 'openWorksheet()', 'فتح ورقة العمل'],
+    ['اختبار قصير مرفق من المعلمة', 'openQuiz()', 'فتح الاختبار'],
+    ['مراجعة بمفتاح التصحيح وتسجيل نتيجة الصف', 'openWorksheet()', 'مفتاح التصحيح'],
+  ];
+  function renderPlan(){
+    const pl = stagePlan[periodLen];
+    document.getElementById('planCard').innerHTML =
+      `<div class="plan-head">⏱ حصتك الكاملة — ${ar(periodLen)} دقيقة</div>` +
+      pl.map((x,i)=>`<div class="plan-row"><span class="pm">${ar(x[2])} د</span>
+        <span class="pt"><b>${x[0]}</b><span class="ps">${stageMeta[i][0]}</span></span>
+        ${stageMeta[i][1] ? `<button class="pa" onclick="${stageMeta[i][1]}">${stageMeta[i][2]}</button>` : ''}</div>`).join('') +
+      `<div class="plan-total">المجموع ${ar(periodLen)} دقيقة — الاختبار النهائي مرفق اختيارياً من المعلمة خارج زمن الحصة.</div>
+       <button class="primary-btn" style="margin:0" onclick="openLesson()">▶ ابدأ الحصة بالمؤقت</button>`;
+  }
+  const stagePlan = {
+    30: [['التهيئة','تعريف الطلبة بهدف الحصة',3],['المحتوى المعتمد','شرح مختصر من المكتبة',8],['نشاط تطبيقي','ورقة عمل',12],['تقويم ختامي','اختبار من ٣–٥ أسئلة',5],['الختام','مراجعة وتلخيص',2]],
+    35: [['التهيئة','تعريف الطلبة بهدف الحصة',3],['المحتوى المعتمد','شرح مختصر من المكتبة',10],['نشاط تطبيقي','ورقة عمل',14],['تقويم ختامي','اختبار من ٣–٥ أسئلة',5],['الختام','مراجعة وتلخيص',3]],
+  };
+  const ar = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  document.getElementById('periodRow').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if(!c) return;
+    document.querySelectorAll('#periodRow .chip').forEach(x=>x.classList.remove('selected'));
+    c.classList.add('selected'); periodLen = +c.dataset.period; renderPlan();
+  });
+  function unit(){ return document.getElementById('lsFast').checked ? 1 : 60; }
+  function openLesson(){
+    const t = (activeCurricVersion && activeCurricVersion.title) || document.getElementById('playerTitle').textContent;
+    document.getElementById('lsTitle').textContent = t;
+    document.getElementById('lsSub').textContent = `الصف ${grade} · ${subject} · حصة ${ar(periodLen)} دقيقة`;
+    stageIdx = 0; resetTimer(); toView('view-lesson');
+  }
+  function resetTimer(){
+    stopTimer(); remain = stagePlan[periodLen][stageIdx][2] * unit(); paint();
+  }
+  function paint(){
+    const st = stagePlan[periodLen][stageIdx], tot = st[2]*unit();
+    const m = Math.floor(remain/60), sec = remain%60;
+    document.getElementById('lsClock').textContent = ar(String(m).padStart(2,'0'))+':'+ar(String(sec).padStart(2,'0'));
+    document.getElementById('lsStageName').textContent = `المرحلة ${ar(stageIdx+1)}: ${st[0]}`;
+    document.getElementById('lsBar').style.width = (100 - remain/tot*100)+'%';
+    document.getElementById('lsStages').innerHTML = stagePlan[periodLen].map((x,i)=>`
+      <div class="stage-row ${i===stageIdx?'now':i<stageIdx?'done':''}">
+        <span class="sn">${i<stageIdx?'✓':ar(i+1)}</span>
+        <span class="st"><b>${x[0]}</b><br><span class="sm">${x[1]}</span></span>
+        <span class="sm">${ar(x[2])} د</span>${stageMeta[i][1] ? `<button class="sact" onclick="${stageMeta[i][1]}">${stageMeta[i][2]}</button>` : ''}</div>`).join('');
+  }
+  function stopTimer(){ if(tmr){clearInterval(tmr);tmr=null;} const b=document.getElementById('lsPlay'); if(b) b.textContent='ابدأ'; }
+  function toggleTimer(){
+    if(tmr){ stopTimer(); document.getElementById('lsPlay').textContent='متابعة'; return; }
+    document.getElementById('lsPlay').textContent='إيقاف مؤقت';
+    tmr = setInterval(()=>{ remain--; if(remain<=0){ nextStage(true); } else paint(); }, 1000);
+  }
+  function nextStage(auto){
+    const run = !!tmr || auto===true;
+    stopTimer();
+    if(stageIdx < stagePlan[periodLen].length-1){ stageIdx++; remain = stagePlan[periodLen][stageIdx][2]*unit(); paint(); if(run) toggleTimer(); }
+    else { remain = 0; paint(); document.getElementById('lsStageName').textContent='انتهت الحصة'; document.getElementById('lsPlay').textContent='ابدأ'; }
+  }
+</script>
+
+</body>
+</html>
